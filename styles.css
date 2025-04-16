@@ -108,6 +108,8 @@ img {
     .sidebar {
         transform: translateX(-100%);
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        width: 80%;
+        max-width: 300px;
     }
 
     .sidebar.show {
@@ -118,25 +120,26 @@ img {
         margin-left: 0;
         width: 100%;
         padding: 20px;
+        padding-top: 60px; /* 为顶部菜单按钮留出空间 */
     }
 
-    /* 汉堡菜单按钮 */
+    /* 汉堡菜单按钮样式优化 */
     .toggle-nav {
         position: fixed;
-        top: 20px;
-        left: 20px;
+        top: 10px;
+        left: 10px;
         z-index: 1001;
         background: var(--primary-color);
         color: white;
         border: none;
-        padding: 8px 12px;
+        width: 40px;
+        height: 40px;
         border-radius: 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 5px;
-        font-size: 14px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .toggle-nav:hover {
@@ -169,7 +172,7 @@ img {
         bottom: -6px;
     }
 
-    /* 遮罩层 */
+    /* 遮罩层样式优化 */
     .overlay {
         display: none;
         position: fixed;
@@ -179,47 +182,48 @@ img {
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         z-index: 999;
+        backdrop-filter: blur(2px);
     }
 
     .overlay.show {
         display: block;
     }
+
+    /* 图片容器样式优化 */
+    .img-container {
+        margin: 10px 0;
+        width: 100%;
+        min-height: 150px;
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+    }
+    
+    .content-image {
+        max-height: 300px;
+        width: 100%;
+        object-fit: contain;
+        background: white;
+    }
+
+    .content-image.loaded {
+        opacity: 1;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 }
 
-/* 图片容器样式 */
-.img-container {
-    position: relative;
-    margin: 15px 0;
-    min-height: 100px;
-    max-width: 600px;
-    background: transparent;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.content-image {
-    max-width: 100%;
-    height: auto;
-    max-height: 400px;
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    object-fit: contain;
-    display: block;
-}
-
-.content-image.loaded {
-    opacity: 1;
-}
-
-/* 加载动画样式 */
+/* 加载动画样式优化 */
 .loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     z-index: 1;
 }
 
