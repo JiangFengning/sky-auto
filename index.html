@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>光遇每日任务</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <nav class="sidebar">
@@ -24,17 +25,41 @@
     
     <main class="content">
         <h1>光遇每日任务</h1>
+        
         <div id="daily-tasks" class="section">
             <h2>今日任务</h2>
-            <!-- 每日任务内容将通过JavaScript动态更新 -->
+            <div class="loading"></div>
         </div>
 
         <div id="eden-eye" class="section">
             <h2>伊甸之眼坠落碎片</h2>
-            <!-- 伊甸之眼内容 -->
+            <div class="loading"></div>
         </div>
 
-        <!-- 其他部分将通过JavaScript动态加载 -->
+        <div id="ancestors" class="section">
+            <h2>旅行先祖</h2>
+            <div class="loading"></div>
+        </div>
+
+        <div id="flower-tokens" class="section">
+            <h2>花朵代币</h2>
+            <div class="loading"></div>
+        </div>
+
+        <div id="magic" class="section">
+            <h2>魔法商店</h2>
+            <div class="loading"></div>
+        </div>
+
+        <div id="candles" class="section">
+            <h2>大蜡烛</h2>
+            <div class="loading"></div>
+        </div>
+
+        <div id="listen-together" class="section">
+            <h2>一起听</h2>
+            <div class="loading"></div>
+        </div>
     </main>
 
     <script src="script.js"></script>
