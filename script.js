@@ -206,35 +206,47 @@ function updateContent(sections) {
         // 处理图片URL
         const originalSrc = img.getAttribute("src");
         if (originalSrc) {
-          // 确保使用HTTPS
-          let newSrc = originalSrc;
-          if (newSrc.startsWith("http://")) {
-            newSrc = newSrc.replace("http://", "https://");
-          }
+          // 使用图片代理服务
+          const proxyUrl =
+            "https://images.weserv.nl/?url=" + encodeURIComponent(originalSrc);
 
-          // 添加错误处理
-          img.onerror = function () {
+          // 创建新的图片元素
+          const newImg = new Image();
+          newImg.className = img.className;
+
+          // 添加加载中状态
+          const loadingDiv = document.createElement("div");
+          loadingDiv.className = "loading";
+          container.appendChild(loadingDiv);
+
+          // 错误处理
+          newImg.onerror = function () {
+            loadingDiv.remove();
             this.style.display = "none";
-            const errorText = document.createElement("div");
-            errorText.className = "error";
-            errorText.textContent = "图片加载失败";
-            container.appendChild(errorText);
-
-            // 记录失败的图片URL
-            console.error("图片加载失败:", newSrc);
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "error";
+            errorDiv.innerHTML = `
+              <div>图片加载失败</div>
+              <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
+              <div class="error-url">${originalSrc}</div>
+            `;
+            container.appendChild(errorDiv);
+            console.error("图片加载失败:", originalSrc);
           };
 
-          // 添加加载成功处理
-          img.onload = function () {
+          // 加载成功处理
+          newImg.onload = function () {
+            loadingDiv.remove();
             this.classList.add("loaded");
           };
 
-          img.src = newSrc;
+          // 设置图片源
+          newImg.src = proxyUrl;
+          container.appendChild(newImg);
         }
 
-        // 将图片放入容器
-        img.parentNode.insertBefore(container, img);
-        container.appendChild(img);
+        // 替换原始图片
+        img.parentNode.replaceChild(container, img);
       });
 
       // 移除加载状态
@@ -245,3 +257,59 @@ function updateContent(sections) {
     }
   });
 }
+
+// 重试加载图片
+window.retryImage = function (button, originalSrc) {
+  const container = button.closest(".img-container");
+  if (container) {
+    // 清除错误信息
+    container.innerHTML = "";
+
+    // 添加加载中状态
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "loading";
+    container.appendChild(loadingDiv);
+
+    // 创建新图片
+    const newImg = new Image();
+
+    // 使用多个图片代理服务尝试加载
+    const proxyUrls = [
+      "https://images.weserv.nl/?url=" + encodeURIComponent(originalSrc),
+      "https://cors-anywhere.herokuapp.com/" + originalSrc,
+      originalSrc.replace("http://", "https://"),
+    ];
+
+    let currentProxyIndex = 0;
+
+    function tryNextProxy() {
+      if (currentProxyIndex < proxyUrls.length) {
+        const proxyUrl = proxyUrls[currentProxyIndex];
+        newImg.src = proxyUrl;
+        currentProxyIndex++;
+      } else {
+        // 所有代理都失败了
+        loadingDiv.remove();
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error";
+        errorDiv.innerHTML = `
+          <div>图片加载失败</div>
+          <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
+          <div class="error-url">${originalSrc}</div>
+        `;
+        container.appendChild(errorDiv);
+      }
+    }
+
+    newImg.onerror = tryNextProxy;
+
+    newImg.onload = function () {
+      loadingDiv.remove();
+      this.classList.add("loaded");
+      container.appendChild(this);
+    };
+
+    // 开始尝试第一个代理
+    tryNextProxy();
+  }
+};
