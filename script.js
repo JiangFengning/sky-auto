@@ -1,16 +1,75 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 加载README内容
-  fetch("README.md")
-    .then((response) => response.text())
-    .then((text) => {
-      const sections = parseMdContent(text);
-      updateContent(sections);
-    })
-    .catch((error) => {
-      console.error("Error loading content:", error);
-      document.querySelector(".content").innerHTML =
-        '<div class="error">内容加载失败，请稍后重试</div>';
+  // 初始化变量
+  const updateTimeElement = document.getElementById("update-time");
+  const refreshButton = document.getElementById("refresh-btn");
+  let lastUpdateTime = null;
+
+  // 加载内容函数
+  function loadContent() {
+    // 显示加载状态
+    document.querySelectorAll(".section").forEach((section) => {
+      section.querySelector(".loading").style.display = "block";
     });
+
+    fetch("README.md")
+      .then((response) => response.text())
+      .then((text) => {
+        const sections = parseMdContent(text);
+        updateContent(sections);
+        lastUpdateTime = new Date();
+        updateTimeElement.textContent = `更新时间：${formatDate(
+          lastUpdateTime
+        )}`;
+
+        // 显示成功消息
+        showMessage("内容已更新", "success");
+      })
+      .catch((error) => {
+        console.error("Error loading content:", error);
+        showMessage("内容加载失败，请稍后重试", "error");
+      });
+  }
+
+  // 显示消息函数
+  function showMessage(message, type) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = type;
+    messageDiv.textContent = message;
+
+    // 移除之前的消息
+    document.querySelectorAll(".error, .success").forEach((el) => el.remove());
+
+    // 添加新消息
+    document.querySelector(".header-info").appendChild(messageDiv);
+
+    // 3秒后自动移除消息
+    setTimeout(() => messageDiv.remove(), 3000);
+  }
+
+  // 格式化日期
+  function formatDate(date) {
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return date.toLocaleString("zh-CN", options);
+  }
+
+  // 刷新按钮点击事件
+  refreshButton.addEventListener("click", function () {
+    // 添加旋转动画
+    this.querySelector(".refresh-icon").style.transform = "rotate(360deg)";
+    setTimeout(() => {
+      this.querySelector(".refresh-icon").style.transform = "";
+    }, 300);
+
+    loadContent();
+  });
 
   // 处理导航点击事件
   document.querySelectorAll(".sidebar a").forEach((link) => {
@@ -63,6 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+
+  // 初始加载内容
+  loadContent();
 });
 
 // 解析Markdown内容
@@ -110,13 +172,28 @@ function updateContent(sections) {
   Object.keys(sections).forEach((sectionId) => {
     const element = document.getElementById(sectionId);
     if (element && sections[sectionId]) {
-      element.innerHTML = marked.parse(sections[sectionId]);
+      const content = marked.parse(sections[sectionId]);
+      element.innerHTML = content;
+
       // 处理图片加载
       element.querySelectorAll("img").forEach((img) => {
         const container = document.createElement("div");
         container.className = "img-container";
         img.parentNode.insertBefore(container, img);
         container.appendChild(img);
+
+        // 添加加载状态处理
+        img.addEventListener("load", () => {
+          img.classList.add("loaded");
+        });
+
+        img.addEventListener("error", () => {
+          img.style.display = "none";
+          const errorText = document.createElement("div");
+          errorText.className = "error";
+          errorText.textContent = "图片加载失败";
+          container.appendChild(errorText);
+        });
       });
     }
   });
