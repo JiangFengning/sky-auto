@@ -92,15 +92,62 @@ document.addEventListener("DOMContentLoaded", function () {
   const content = document.querySelector(".content");
 
   if (window.innerWidth <= 768) {
+    // 创建遮罩层
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    document.body.appendChild(overlay);
+
+    // 创建菜单按钮
     const toggleButton = document.createElement("button");
-    toggleButton.textContent = "菜单";
-    toggleButton.classList.add("toggle-nav");
+    toggleButton.className = "toggle-nav";
+    const iconSpan = document.createElement("span");
+    iconSpan.className = "icon";
+    toggleButton.appendChild(iconSpan);
     document.body.insertBefore(toggleButton, sidebar);
 
+    // 处理菜单点击事件
     toggleButton.addEventListener("click", () => {
       sidebar.classList.toggle("show");
+      overlay.classList.toggle("show");
+      document.body.style.overflow = sidebar.classList.contains("show")
+        ? "hidden"
+        : "";
+    });
+
+    // 点击遮罩层关闭菜单
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("show");
+      overlay.classList.remove("show");
+      document.body.style.overflow = "";
+    });
+
+    // 点击导航链接后关闭菜单
+    document.querySelectorAll(".sidebar a").forEach((link) => {
+      link.addEventListener("click", () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+        document.body.style.overflow = "";
+      });
     });
   }
+
+  // 处理窗口大小变化
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      // 移除移动端相关元素
+      const overlay = document.querySelector(".overlay");
+      const toggleButton = document.querySelector(".toggle-nav");
+      if (overlay) overlay.remove();
+      if (toggleButton) toggleButton.remove();
+
+      // 重置样式
+      sidebar.classList.remove("show");
+      document.body.style.overflow = "";
+    } else if (!document.querySelector(".toggle-nav")) {
+      // 如果切换到移动端视图，重新初始化移动端导航
+      location.reload();
+    }
+  });
 
   // 处理滚动时的导航高亮
   window.addEventListener("scroll", () => {
