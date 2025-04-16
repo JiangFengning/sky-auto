@@ -6,6 +6,17 @@
     <title>光遇每日任务</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // 配置marked选项
+        marked.setOptions({
+            breaks: true, // 支持GitHub风格的换行
+            gfm: true,   // 启用GitHub风格的Markdown
+            pedantic: false,
+            sanitize: false,
+            smartLists: true,
+            smartypants: false
+        });
+    </script>
 </head>
 <body>
     <nav class="sidebar">
