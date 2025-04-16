@@ -242,10 +242,38 @@ function updateContent(sections) {
     if (element && sections[sectionId]) {
       // 使用marked.js解析markdown内容
       const content = marked.parse(sections[sectionId]);
-      element.innerHTML = content;
 
-      // 处理图片加载
-      element.querySelectorAll("img").forEach((img) => {
+      // 创建临时容器来处理内容
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = content;
+
+      // 添加任务完成状态
+      const taskStatus = document.createElement("div");
+      taskStatus.className = "task-status";
+
+      // 从内容中提取任务完成状态
+      const taskText = tempContainer.textContent;
+      if (taskText.includes("0/1")) {
+        taskStatus.textContent = "进行中";
+        taskStatus.style.color = "#FFA000";
+        taskStatus.style.setProperty("--status-color", "#FFA000");
+      } else if (taskText.includes("1/1")) {
+        taskStatus.textContent = "已完成";
+        taskStatus.style.color = "#4CAF50";
+        taskStatus.style.setProperty("--status-color", "#4CAF50");
+      }
+
+      // 将状态添加到section
+      const firstHeading = tempContainer.querySelector(
+        "h1, h2, h3, h4, h5, h6"
+      );
+      if (firstHeading) {
+        firstHeading.style.position = "relative";
+        firstHeading.appendChild(taskStatus);
+      }
+
+      // 处理图片
+      tempContainer.querySelectorAll("img").forEach((img) => {
         // 创建图片容器
         const container = document.createElement("div");
         container.className = "img-container";
