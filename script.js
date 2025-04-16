@@ -246,7 +246,7 @@ function updateContent(sections) {
         // 处理图片URL
         const originalSrc = img.getAttribute("src");
         if (originalSrc) {
-          // 移除可能的 Markdown 语法
+          // 移除可能的 Markdown 语法并清理URL
           const cleanSrc = originalSrc.replace(/[!\[\]]/g, "").trim();
 
           // 创建新的图片元素
@@ -258,49 +258,28 @@ function updateContent(sections) {
           loadingDiv.className = "loading";
           container.appendChild(loadingDiv);
 
-          // 尝试不同的图片加载方式
-          const tryLoadImage = (urls, index = 0) => {
-            if (index >= urls.length) {
-              // 所有尝试都失败了
-              loadingDiv.remove();
-              const errorDiv = document.createElement("div");
-              errorDiv.className = "error";
-              errorDiv.innerHTML = `
-                <div>图片加载失败</div>
-                <button class="retry-button" onclick="retryImage(this, '${cleanSrc}')">重试</button>
-                <div class="error-url">${cleanSrc}</div>
-              `;
-              container.appendChild(errorDiv);
-              console.error("图片加载失败:", cleanSrc);
-              return;
-            }
-
-            newImg.onerror = () => {
-              console.log(`尝试加载失败，使用下一个URL: ${urls[index]}`);
-              tryLoadImage(urls, index + 1);
-            };
-
-            newImg.onload = function () {
-              loadingDiv.remove();
-              this.classList.add("loaded");
-              container.appendChild(this);
-            };
-
-            newImg.src = urls[index];
+          // 图片加载失败处理
+          newImg.onerror = () => {
+            loadingDiv.remove();
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "error";
+            errorDiv.innerHTML = `
+              <div>图片加载失败</div>
+              <div class="error-url">${cleanSrc}</div>
+              <button class="retry-button" onclick="retryImage(this, '${cleanSrc}')">重试</button>
+            `;
+            container.appendChild(errorDiv);
           };
 
-          // 准备不同的URL尝试方案
-          const urls = [
-            cleanSrc, // 原始URL
-            cleanSrc.replace("http://", "https://"), // HTTPS版本
-            `https://images.weserv.nl/?url=${encodeURIComponent(cleanSrc)}`, // 使用weserv.nl代理
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(
-              cleanSrc
-            )}`, // 使用allorigins代理
-          ];
+          // 图片加载成功处理
+          newImg.onload = function () {
+            loadingDiv.remove();
+            this.classList.add("loaded");
+            container.appendChild(this);
+          };
 
-          // 开始尝试加载
-          tryLoadImage(urls);
+          // 设置图片源
+          newImg.src = cleanSrc;
         }
 
         // 替换原始图片
@@ -329,35 +308,17 @@ window.retryImage = function (button, originalSrc) {
     const newImg = new Image();
     newImg.className = "content-image";
 
-    // 准备不同的URL尝试方案
-    const urls = [
-      originalSrc,
-      originalSrc.replace("http://", "https://"),
-      `https://images.weserv.nl/?url=${encodeURIComponent(originalSrc)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`,
-    ];
-
-    let currentIndex = 0;
-
-    function tryNextUrl() {
-      if (currentIndex < urls.length) {
-        console.log(`尝试加载URL: ${urls[currentIndex]}`);
-        newImg.src = urls[currentIndex];
-        currentIndex++;
-      } else {
-        loadingDiv.remove();
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error";
-        errorDiv.innerHTML = `
-          <div>图片加载失败</div>
-          <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
-          <div class="error-url">${originalSrc}</div>
-        `;
-        container.appendChild(errorDiv);
-      }
-    }
-
-    newImg.onerror = tryNextUrl;
+    newImg.onerror = () => {
+      loadingDiv.remove();
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "error";
+      errorDiv.innerHTML = `
+        <div>图片加载失败</div>
+        <div class="error-url">${originalSrc}</div>
+        <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
+      `;
+      container.appendChild(errorDiv);
+    };
 
     newImg.onload = function () {
       loadingDiv.remove();
@@ -365,7 +326,7 @@ window.retryImage = function (button, originalSrc) {
       container.appendChild(this);
     };
 
-    // 开始尝试第一个URL
-    tryNextUrl();
+    // 直接尝试加载原始URL
+    newImg.src = originalSrc;
   }
 };
