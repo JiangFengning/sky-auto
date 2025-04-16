@@ -203,13 +203,6 @@ function updateContent(sections) {
         const container = document.createElement("div");
         container.className = "img-container";
 
-        // 添加关闭按钮
-        const closeButton = document.createElement("button");
-        closeButton.className = "close-button";
-        closeButton.innerHTML = "×";
-        closeButton.style.display = "none";
-        container.appendChild(closeButton);
-
         // 处理图片URL
         const originalSrc = img.getAttribute("src");
         if (originalSrc) {
@@ -251,27 +244,6 @@ function updateContent(sections) {
               loadingDiv.remove();
               this.classList.add("loaded");
               container.appendChild(this);
-
-              // 添加点击查看大图功能
-              container.onclick = function (e) {
-                if (e.target === closeButton) {
-                  container.classList.remove("expanded");
-                  closeButton.style.display = "none";
-                  document.body.style.overflow = "auto";
-                } else if (e.target !== errorDiv) {
-                  container.classList.toggle("expanded");
-                  closeButton.style.display = container.classList.contains(
-                    "expanded"
-                  )
-                    ? "flex"
-                    : "none";
-                  document.body.style.overflow = container.classList.contains(
-                    "expanded"
-                  )
-                    ? "hidden"
-                    : "auto";
-                }
-              };
             };
 
             newImg.src = urls[index];
