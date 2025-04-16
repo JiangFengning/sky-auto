@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   // 初始化变量
-  const updateTimeElement = document.getElementById("update-time");
-  const refreshButton = document.getElementById("refresh-btn");
   let lastUpdateTime = null;
 
   // 加载内容函数
@@ -17,12 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const sections = parseMdContent(text);
         updateContent(sections);
         lastUpdateTime = new Date();
-        updateTimeElement.textContent = `更新时间：${formatDate(
-          lastUpdateTime
-        )}`;
-
-        // 显示成功消息
-        showMessage("内容已更新", "success");
       })
       .catch((error) => {
         console.error("Error loading content:", error);
