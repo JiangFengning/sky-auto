@@ -129,9 +129,10 @@ img {
 /* 图片容器样式更新 */
 .img-container {
     position: relative;
-    margin: 20px 0;
+    margin: 15px auto;
     text-align: center;
     min-height: 150px;
+    max-width: 600px;
     background: #f8f9fa;
     border-radius: 8px;
     overflow: hidden;
@@ -141,13 +142,92 @@ img {
 .img-container img {
     max-width: 100%;
     height: auto;
+    max-height: 400px;
     border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    object-fit: contain;
+}
+
+/* 大图查看功能 */
+.img-container.expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
+
+.img-container.expanded img {
+    max-height: 90vh;
+    max-width: 90vw;
+    object-fit: contain;
+}
+
+/* 添加图片点击提示 */
+.img-container::after {
+    content: "点击查看大图";
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
     opacity: 0;
     transition: opacity 0.3s;
 }
 
-.img-container img.loaded {
+.img-container:hover::after {
     opacity: 1;
+}
+
+/* 关闭按钮 */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.img-container.expanded .close-button {
+    display: flex;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .img-container {
+        margin: 10px -20px;
+        border-radius: 0;
+    }
+    
+    .img-container img {
+        max-height: 300px;
+    }
 }
 
 /* 错误显示样式 */
