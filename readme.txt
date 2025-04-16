@@ -1,13 +1,13 @@
 ---
-title: 光遇每日任务标题
-date: 2025-04-16 13:48:10
+title: <div>每日任务 大蜡烛   免费魔法 </div>
+date: 2025-04-16 19:02:29
 categories: Sky光•遇
-tags: [Sky光•遇,光遇每日任务标题]
+tags: [Sky光•遇,<div>每日任务 大蜡烛   免费魔法 </div>]
 description: 
 index_img: https://ok.166.net/reunionpub/ds/kol/20210722/001554-k2u90bj7ay.png?imageView&thumbnail=600x0&type=jpg
 banner_img: https://ok.166.net/reunionpub/ds/kol/20210722/001554-k2u90bj7ay.png?imageView&thumbnail=600x0&type=jpg
 ---
-# 光遇每日任务标题
+# <div>每日任务 大蜡烛   免费魔法 </div>
 ![](https://img.166.net/reunionpub/1_kol_20250416_d5e71e3190feeffccb1b1facd508d73f.jpeg)
 
 **任务一：和陌生人一起坐在长凳上 0/1**
