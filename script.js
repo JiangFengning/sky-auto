@@ -142,26 +142,47 @@ function parseMdContent(text) {
   let currentSection = "";
   const lines = text.split("\n");
 
-  lines.forEach((line) => {
-    if (line.startsWith("## 任务")) {
+  // 添加调试信息
+  console.log("开始解析Markdown内容");
+
+  lines.forEach((line, index) => {
+    // 调试每行内容
+    console.log(`处理第${index + 1}行:`, line);
+
+    if (line.startsWith("## 任务") || line.includes("任务一")) {
       currentSection = "daily-tasks";
+      console.log("切换到每日任务部分");
     } else if (line.includes("伊甸之眼")) {
       currentSection = "eden-eye";
-    } else if (line.includes("旅行﻿先祖")) {
+      console.log("切换到伊甸之眼部分");
+    } else if (line.includes("旅行﻿先祖") || line.includes("旅行先祖")) {
       currentSection = "ancestors";
+      console.log("切换到旅行先祖部分");
     } else if (line.includes("花朵代币")) {
       currentSection = "flower-tokens";
+      console.log("切换到花朵代币部分");
     } else if (line.includes("魔法")) {
       currentSection = "magic";
+      console.log("切换到魔法商店部分");
     } else if (line.includes("大蜡烛")) {
       currentSection = "candles";
+      console.log("切换到大蜡烛部分");
     } else if (line.includes('"一起听"')) {
       currentSection = "listen-together";
+      console.log("切换到一起听部分");
     }
 
     if (currentSection && sections[currentSection] !== undefined) {
       sections[currentSection] += line + "\n";
     }
+  });
+
+  // 输出解析结果
+  console.log("内容解析结果:", sections);
+
+  // 检查每个部分是否有内容
+  Object.entries(sections).forEach(([key, value]) => {
+    console.log(`${key} 部分内容长度:`, value.length);
   });
 
   return sections;
@@ -172,29 +193,55 @@ function updateContent(sections) {
   Object.keys(sections).forEach((sectionId) => {
     const element = document.getElementById(sectionId);
     if (element && sections[sectionId]) {
+      // 使用marked.js解析markdown内容
       const content = marked.parse(sections[sectionId]);
       element.innerHTML = content;
 
       // 处理图片加载
       element.querySelectorAll("img").forEach((img) => {
+        // 创建图片容器
         const container = document.createElement("div");
         container.className = "img-container";
+
+        // 处理图片URL
+        const originalSrc = img.getAttribute("src");
+        if (originalSrc) {
+          // 确保使用HTTPS
+          let newSrc = originalSrc;
+          if (newSrc.startsWith("http://")) {
+            newSrc = newSrc.replace("http://", "https://");
+          }
+
+          // 添加错误处理
+          img.onerror = function () {
+            this.style.display = "none";
+            const errorText = document.createElement("div");
+            errorText.className = "error";
+            errorText.textContent = "图片加载失败";
+            container.appendChild(errorText);
+
+            // 记录失败的图片URL
+            console.error("图片加载失败:", newSrc);
+          };
+
+          // 添加加载成功处理
+          img.onload = function () {
+            this.classList.add("loaded");
+          };
+
+          img.src = newSrc;
+        }
+
+        // 将图片放入容器
         img.parentNode.insertBefore(container, img);
         container.appendChild(img);
-
-        // 添加加载状态处理
-        img.addEventListener("load", () => {
-          img.classList.add("loaded");
-        });
-
-        img.addEventListener("error", () => {
-          img.style.display = "none";
-          const errorText = document.createElement("div");
-          errorText.className = "error";
-          errorText.textContent = "图片加载失败";
-          container.appendChild(errorText);
-        });
       });
+
+      // 移除加载状态
+      const loadingElement = element.querySelector(".loading");
+      if (loadingElement) {
+        loadingElement.style.display = "none";
+      }
     }
   });
 }
