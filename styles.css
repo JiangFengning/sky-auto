@@ -128,15 +128,37 @@ img {
 
 /* 图片容器样式 */
 .img-container {
+    position: relative;
     margin: 20px 0;
     text-align: center;
+    min-height: 100px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .img-container img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.img-container img.loaded {
+    opacity: 1;
+}
+
+.img-container .error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
 /* 任务列表样式 */
@@ -174,14 +196,50 @@ img {
 
 /* 添加加载动画 */
 .loading {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
+    min-height: 100px;
 }
 
 .loading::after {
     content: "加载中...";
     color: var(--secondary-color);
+    animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+    0% { content: "加载中"; }
+    33% { content: "加载中."; }
+    66% { content: "加载中.."; }
+    100% { content: "加载中..."; }
+}
+
+/* 内容为空时的提示 */
+.section:empty::after {
+    content: "暂无内容";
+    display: block;
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 20px;
     font-style: italic;
+}
+
+/* 图片重试按钮 */
+.retry-button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.retry-button:hover {
+    background: #2980b9;
 }
 
 /* 头部信息样式 */
