@@ -114,41 +114,16 @@ class SkyTask(object):
 
     def writeDoc(self, md: str, html: str, title: str):
         '''写文件 传入md,html字符串和标题,返回md文件的位置和处理后html内容'''
-#         MDheader = '''---
-# title: %s
-# date: %s
-# categories: Sky光•遇
-# tags: [Sky光•遇,%s]
-# description: 
-# index_img: 
-# banner_img: 
-# ---''' % (title, time.strftime("%Y-%m-%d %H:%M:%S"), title)
-
         # 构造文件名
         strtime = time.strftime("%Y-%m-%d")
         file_name = "%s %s" % (strtime, self.checkNameValid(title))
-        md = f"{MDheader}\n# {title}\n{md}"  # 为md文件加标题和博客头
+        md = f"# {title}\n{md}"  # 只添加标题
         html = f"<h1>{title}</h1>{html}"  # 为 html 添加标题
-
-        # 重名处理
-        #if os.path.exists(os.path.join("html", "%s.html" % (file_name))):
-        #    file_name = "%s[%s]" % (file_name, random.randint(0, 9999))
-
-        # 写文件
-        #self.makedir()  # 建目录
-
-        # 在 html 目录中写文件
-        #with open(os.path.join("html", "%s.html" % (file_name)), "w", encoding="utf8") as h:
-        #    h.write(html)
-
-        # 在 docs 目录中写文件
-        #with open(os.path.join("docs", "%s.md" % (file_name)), "w", encoding="utf8") as m:
-        #    m.write(md)
 
         # 在 reademe.md 中写文件
         with open("README.md", "w", encoding="utf8") as mm:
             mm.write(md)
-        # 在 reademe.md 中写文件
+        # 在 reademe.txt 中写文件
         with open("readme.txt", "w", encoding="utf8") as mm:
             mm.write(md)
 
