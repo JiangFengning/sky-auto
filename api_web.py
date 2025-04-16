@@ -59,7 +59,7 @@ class SkyTask(object):
                 r'<h1 class="feed-article__headline">(.*?)</h1>')
             html = pat.findall(resp)[0]
             title = pat_title.findall(resp)[0]
-            #title = "光遇每日任务标题" #去除DIV
+            title = "光遇每日任务标题" #去除DIV
         except Exception as e:
             log.logger.warning(f"{article_url}解析失败! {e}")
             return False, False
@@ -114,15 +114,15 @@ class SkyTask(object):
 
     def writeDoc(self, md: str, html: str, title: str):
         '''写文件 传入md,html字符串和标题,返回md文件的位置和处理后html内容'''
-        MDheader = '''---
-title: %s
-date: %s
-categories: Sky光•遇
-tags: [Sky光•遇,%s]
-description: 
-index_img: https://ok.166.net/reunionpub/ds/kol/20210722/001554-k2u90bj7ay.png?imageView&thumbnail=600x0&type=jpg
-banner_img: https://ok.166.net/reunionpub/ds/kol/20210722/001554-k2u90bj7ay.png?imageView&thumbnail=600x0&type=jpg
----''' % (title, time.strftime("%Y-%m-%d %H:%M:%S"), title)
+#         MDheader = '''---
+# title: %s
+# date: %s
+# categories: Sky光•遇
+# tags: [Sky光•遇,%s]
+# description: 
+# index_img: 
+# banner_img: 
+# ---''' % (title, time.strftime("%Y-%m-%d %H:%M:%S"), title)
 
         # 构造文件名
         strtime = time.strftime("%Y-%m-%d")
