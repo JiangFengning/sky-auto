@@ -343,38 +343,12 @@ img {
     flex-wrap: wrap;
 }
 
-.update-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 14px;
-    color: var(--secondary-color);
-}
-
-.refresh-button {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 15px;
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.refresh-button:hover {
-    background-color: #2980b9;
-}
-
-.refresh-icon {
-    display: inline-block;
-    transition: transform 0.3s;
-}
-
-.refresh-button:active .refresh-icon {
-    transform: rotate(180deg);
+@media (max-width: 768px) {
+    .header-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
 }
 
 /* 成功提示样式 */
@@ -385,17 +359,4 @@ img {
     border-radius: 4px;
     margin: 10px 0;
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .header-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .update-info {
-        width: 100%;
-        justify-content: space-between;
-    }
 }
