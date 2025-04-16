@@ -1,381 +1,401 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // 初始化变量
-  const updateTimeElement = document.getElementById("update-time");
-  const refreshButton = document.getElementById("refresh-btn");
-  let lastUpdateTime = null;
-
-  // 加载内容函数
-  function loadContent() {
-    // 显示加载状态
-    document.querySelectorAll(".section").forEach((section) => {
-      section.querySelector(".loading").style.display = "block";
-    });
-
-    fetch("README.md")
-      .then((response) => response.text())
-      .then((text) => {
-        const sections = parseMdContent(text);
-        updateContent(sections);
-        lastUpdateTime = new Date();
-        updateTimeElement.textContent = `更新时间：${formatDate(
-          lastUpdateTime
-        )}`;
-
-        // 显示成功消息
-        showMessage("内容已更新", "success");
-      })
-      .catch((error) => {
-        console.error("Error loading content:", error);
-        showMessage("内容加载失败，请稍后重试", "error");
-      });
-  }
-
-  // 显示消息函数
-  function showMessage(message, type) {
-    const messageDiv = document.createElement("div");
-    messageDiv.className = type;
-    messageDiv.textContent = message;
-
-    // 移除之前的消息
-    document.querySelectorAll(".error, .success").forEach((el) => el.remove());
-
-    // 添加新消息
-    document.querySelector(".header-info").appendChild(messageDiv);
-
-    // 3秒后自动移除消息
-    setTimeout(() => messageDiv.remove(), 3000);
-  }
-
-  // 格式化日期
-  function formatDate(date) {
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    };
-    return date.toLocaleString("zh-CN", options);
-  }
-
-  // 刷新按钮点击事件
-  refreshButton.addEventListener("click", function () {
-    // 添加旋转动画
-    this.querySelector(".refresh-icon").style.transform = "rotate(360deg)";
-    setTimeout(() => {
-      this.querySelector(".refresh-icon").style.transform = "";
-    }, 300);
-
-    loadContent();
-  });
-
-  // 处理导航点击事件
-  document.querySelectorAll(".sidebar a").forEach((link) => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const targetId = this.getAttribute("href").substring(1);
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
-        // 在移动端自动关闭菜单
-        if (window.innerWidth <= 768) {
-          document.querySelector(".sidebar").classList.remove("show");
-        }
-      }
-    });
-  });
-
-  // 在移动设备上处理导航栏的显示/隐藏
-  const sidebar = document.querySelector(".sidebar");
-  const content = document.querySelector(".content");
-
-  if (window.innerWidth <= 768) {
-    // 创建遮罩层
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-    document.body.appendChild(overlay);
-
-    // 创建菜单按钮
-    const toggleButton = document.createElement("button");
-    toggleButton.className = "toggle-nav";
-    const iconSpan = document.createElement("span");
-    iconSpan.className = "icon";
-    toggleButton.appendChild(iconSpan);
-    document.body.insertBefore(toggleButton, sidebar);
-
-    // 处理菜单点击事件
-    toggleButton.addEventListener("click", () => {
-      sidebar.classList.toggle("show");
-      overlay.classList.toggle("show");
-      document.body.style.overflow = sidebar.classList.contains("show")
-        ? "hidden"
-        : "";
-    });
-
-    // 点击遮罩层关闭菜单
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("show");
-      overlay.classList.remove("show");
-      document.body.style.overflow = "";
-    });
-
-    // 点击导航链接后关闭菜单
-    document.querySelectorAll(".sidebar a").forEach((link) => {
-      link.addEventListener("click", () => {
-        sidebar.classList.remove("show");
-        overlay.classList.remove("show");
-        document.body.style.overflow = "";
-      });
-    });
-  }
-
-  // 处理窗口大小变化
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 768) {
-      // 移除移动端相关元素
-      const overlay = document.querySelector(".overlay");
-      const toggleButton = document.querySelector(".toggle-nav");
-      if (overlay) overlay.remove();
-      if (toggleButton) toggleButton.remove();
-
-      // 重置样式
-      sidebar.classList.remove("show");
-      document.body.style.overflow = "";
-    } else if (!document.querySelector(".toggle-nav")) {
-      // 如果切换到移动端视图，重新初始化移动端导航
-      location.reload();
-    }
-  });
-
-  // 处理滚动时的导航高亮
-  window.addEventListener("scroll", () => {
-    const sections = document.querySelectorAll(".section");
-    let currentSection = "";
-
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.clientHeight;
-      if (window.pageYOffset >= sectionTop - 100) {
-        currentSection = section.getAttribute("id");
-      }
-    });
-
-    document.querySelectorAll(".sidebar a").forEach((link) => {
-      link.classList.remove("active");
-      if (link.getAttribute("href") === `#${currentSection}`) {
-        link.classList.add("active");
-      }
-    });
-  });
-
-  // 初始加载内容
-  loadContent();
-});
-
-// 解析Markdown内容
-function parseMdContent(text) {
-  const sections = {
-    "daily-tasks": "",
-    "eden-eye": "",
-    ancestors: "",
-    "flower-tokens": "",
-    magic: "",
-    candles: "",
-    "listen-together": "",
-  };
-
-  let currentSection = "";
-  const lines = text.split("\n");
-
-  // 添加调试信息
-  console.log("开始解析Markdown内容");
-
-  lines.forEach((line, index) => {
-    // 调试每行内容
-    console.log(`处理第${index + 1}行:`, line);
-
-    if (line.startsWith("## 任务") || line.includes("任务一")) {
-      currentSection = "daily-tasks";
-      console.log("切换到每日任务部分");
-    } else if (line.includes("伊甸之眼")) {
-      currentSection = "eden-eye";
-      console.log("切换到伊甸之眼部分");
-    } else if (line.includes("旅行﻿先祖") || line.includes("旅行先祖")) {
-      currentSection = "ancestors";
-      console.log("切换到旅行先祖部分");
-    } else if (line.includes("花朵代币")) {
-      currentSection = "flower-tokens";
-      console.log("切换到花朵代币部分");
-    } else if (line.includes("魔法")) {
-      currentSection = "magic";
-      console.log("切换到魔法商店部分");
-    } else if (line.includes("大蜡烛")) {
-      currentSection = "candles";
-      console.log("切换到大蜡烛部分");
-    } else if (line.includes('"一起听"')) {
-      currentSection = "listen-together";
-      console.log("切换到一起听部分");
-    }
-
-    if (currentSection && sections[currentSection] !== undefined) {
-      sections[currentSection] += line + "\n";
-    }
-  });
-
-  // 输出解析结果
-  console.log("内容解析结果:", sections);
-
-  // 检查每个部分是否有内容
-  Object.entries(sections).forEach(([key, value]) => {
-    console.log(`${key} 部分内容长度:`, value.length);
-  });
-
-  return sections;
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --text-color: #2c3e50;
+    --background-color: #ecf0f1;
+    --sidebar-width: 250px;
 }
 
-// 更新页面内容
-function updateContent(sections) {
-  Object.keys(sections).forEach((sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element && sections[sectionId]) {
-      // 使用marked.js解析markdown内容
-      const content = marked.parse(sections[sectionId]);
-      element.innerHTML = content;
-
-      // 处理图片加载
-      element.querySelectorAll("img").forEach((img) => {
-        // 创建图片容器
-        const container = document.createElement("div");
-        container.className = "img-container";
-
-        // 处理图片URL
-        const originalSrc = img.getAttribute("src");
-        if (originalSrc) {
-          // 移除可能的 Markdown 语法
-          const cleanSrc = originalSrc.replace(/[!\[\]]/g, "").trim();
-
-          // 创建新的图片元素
-          const newImg = new Image();
-          newImg.className = "content-image";
-
-          // 添加加载中状态
-          const loadingDiv = document.createElement("div");
-          loadingDiv.className = "loading";
-          container.appendChild(loadingDiv);
-
-          // 尝试不同的图片加载方式
-          const tryLoadImage = (urls, index = 0) => {
-            if (index >= urls.length) {
-              // 所有尝试都失败了
-              loadingDiv.remove();
-              const errorDiv = document.createElement("div");
-              errorDiv.className = "error";
-              errorDiv.innerHTML = `
-                <div>图片加载失败</div>
-                <button class="retry-button" onclick="retryImage(this, '${cleanSrc}')">重试</button>
-                <div class="error-url">${cleanSrc}</div>
-              `;
-              container.appendChild(errorDiv);
-              console.error("图片加载失败:", cleanSrc);
-              return;
-            }
-
-            newImg.onerror = () => {
-              console.log(`尝试加载失败，使用下一个URL: ${urls[index]}`);
-              tryLoadImage(urls, index + 1);
-            };
-
-            newImg.onload = function () {
-              loadingDiv.remove();
-              this.classList.add("loaded");
-              container.appendChild(this);
-            };
-
-            newImg.src = urls[index];
-          };
-
-          // 准备不同的URL尝试方案
-          const urls = [
-            cleanSrc, // 原始URL
-            cleanSrc.replace("http://", "https://"), // HTTPS版本
-            `https://images.weserv.nl/?url=${encodeURIComponent(cleanSrc)}`, // 使用weserv.nl代理
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(
-              cleanSrc
-            )}`, // 使用allorigins代理
-          ];
-
-          // 开始尝试加载
-          tryLoadImage(urls);
-        }
-
-        // 替换原始图片
-        img.parentNode.replaceChild(container, img);
-      });
-
-      // 移除加载状态
-      const loadingElement = element.querySelector(".loading");
-      if (loadingElement) {
-        loadingElement.style.display = "none";
-      }
-    }
-  });
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-// 重试加载图片
-window.retryImage = function (button, originalSrc) {
-  const container = button.closest(".img-container");
-  if (container) {
-    // 清除错误信息
-    container.innerHTML = "";
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    display: flex;
+}
 
-    // 添加加载中状态
-    const loadingDiv = document.createElement("div");
-    loadingDiv.className = "loading";
-    container.appendChild(loadingDiv);
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px 0;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
 
-    // 创建新图片
-    const newImg = new Image();
-    newImg.className = "content-image";
+.nav-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-    // 准备不同的URL尝试方案
-    const urls = [
-      originalSrc,
-      originalSrc.replace("http://", "https://"),
-      `https://images.weserv.nl/?url=${encodeURIComponent(originalSrc)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`,
-    ];
+.sidebar ul {
+    list-style: none;
+}
 
-    let currentIndex = 0;
+.sidebar ul li {
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
 
-    function tryNextUrl() {
-      if (currentIndex < urls.length) {
-        console.log(`尝试加载URL: ${urls[currentIndex]}`);
-        newImg.src = urls[currentIndex];
-        currentIndex++;
-      } else {
-        loadingDiv.remove();
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error";
-        errorDiv.innerHTML = `
-          <div>图片加载失败</div>
-          <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
-          <div class="error-url">${originalSrc}</div>
-        `;
-        container.appendChild(errorDiv);
-      }
+.sidebar ul li:hover {
+    background-color: var(--secondary-color);
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.content {
+    margin-left: var(--sidebar-width);
+    padding: 40px;
+    width: calc(100% - var(--sidebar-width));
+}
+
+.section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+h2 {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
     }
 
-    newImg.onerror = tryNextUrl;
+    .sidebar {
+        transform: translateX(-100%);
+        width: 80%;
+        max-width: 300px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+    }
 
-    newImg.onload = function () {
-      loadingDiv.remove();
-      this.classList.add("loaded");
-      container.appendChild(this);
-    };
+    .sidebar.show {
+        transform: translateX(0);
+    }
 
-    // 开始尝试第一个URL
-    tryNextUrl();
-  }
-};
+    .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+        padding-top: 60px;
+    }
+
+    /* 移动端菜单按钮 */
+    .toggle-nav {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-nav:hover {
+        background: var(--secondary-color);
+    }
+
+    .toggle-nav .icon {
+        width: 20px;
+        height: 2px;
+        background: white;
+        position: relative;
+        transition: all 0.3s;
+    }
+
+    .toggle-nav .icon::before,
+    .toggle-nav .icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: white;
+        transition: all 0.3s;
+    }
+
+    .toggle-nav .icon::before {
+        top: -6px;
+    }
+
+    .toggle-nav .icon::after {
+        bottom: -6px;
+    }
+
+    /* 遮罩层 */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        backdrop-filter: blur(2px);
+    }
+
+    .overlay.show {
+        display: block;
+    }
+}
+
+/* 添加导航高亮效果 */
+.sidebar ul li a.active {
+    color: var(--accent-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--accent-color);
+}
+
+/* 图片容器样式更新 */
+.img-container {
+    position: relative;
+    margin: 15px 0;
+    min-height: 100px;
+    max-width: 600px;
+    background: transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.content-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    object-fit: contain;
+    display: block;
+}
+
+.content-image.loaded {
+    opacity: 1;
+}
+
+/* 加载动画更新 */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    z-index: -1;
+}
+
+.loading::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--accent-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 错误状态样式更新 */
+.error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 300px;
+    background: rgba(231, 76, 60, 0.95);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-url {
+    font-size: 12px;
+    opacity: 0.8;
+    word-break: break-all;
+    max-width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* 重试按钮样式更新 */
+.retry-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.retry-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.retry-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .img-container {
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    .content-image {
+        max-height: 300px;
+        width: 100%;
+    }
+
+    .error {
+        width: 90%;
+    }
+}
+
+/* 内容为空时的提示 */
+.section:empty::after {
+    content: "暂无内容";
+    display: block;
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 20px;
+    font-style: italic;
+}
+
+/* 头部信息样式 */
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.update-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    color: var(--secondary-color);
+}
+
+.refresh-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.refresh-button:hover {
+    background-color: #2980b9;
+}
+
+.refresh-icon {
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.refresh-button:active .refresh-icon {
+    transform: rotate(180deg);
+}
+
+/* 成功提示样式 */
+.success {
+    background-color: #e8f5e9;
+    color: #2ecc71;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .header-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .update-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
