@@ -101,4 +101,85 @@ img {
     body {
         flex-direction: column;
     }
+}
+
+/* 添加导航高亮效果 */
+.sidebar ul li a.active {
+    color: var(--accent-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--accent-color);
+}
+
+/* 移动端菜单按钮样式 */
+.toggle-nav {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* 图片容器样式 */
+.img-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.img-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 任务列表样式 */
+.task-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.task-list li {
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 4px solid var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    .toggle-nav {
+        display: block;
+    }
+
+    .sidebar {
+        display: none;
+        z-index: 999;
+    }
+
+    .sidebar.show {
+        display: block;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+}
+
+/* 添加加载动画 */
+.loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading::after {
+    content: "加载中...";
+    color: var(--secondary-color);
+    font-style: italic;
 } 
