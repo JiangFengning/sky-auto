@@ -92,42 +92,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const content = document.querySelector(".content");
 
   if (window.innerWidth <= 768) {
-    // 创建遮罩层
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-    document.body.appendChild(overlay);
-
-    // 创建菜单按钮
     const toggleButton = document.createElement("button");
-    toggleButton.className = "toggle-nav";
-    const iconSpan = document.createElement("span");
-    iconSpan.className = "icon";
-    toggleButton.appendChild(iconSpan);
+    toggleButton.textContent = "菜单";
+    toggleButton.classList.add("toggle-nav");
     document.body.insertBefore(toggleButton, sidebar);
 
-    // 处理菜单点击事件
     toggleButton.addEventListener("click", () => {
       sidebar.classList.toggle("show");
-      overlay.classList.toggle("show");
-      document.body.style.overflow = sidebar.classList.contains("show")
-        ? "hidden"
-        : "";
-    });
-
-    // 点击遮罩层关闭菜单
-    overlay.addEventListener("click", () => {
-      sidebar.classList.remove("show");
-      overlay.classList.remove("show");
-      document.body.style.overflow = "";
-    });
-
-    // 点击导航链接后关闭菜单
-    document.querySelectorAll(".sidebar a").forEach((link) => {
-      link.addEventListener("click", () => {
-        sidebar.classList.remove("show");
-        overlay.classList.remove("show");
-        document.body.style.overflow = "";
-      });
     });
   }
 
@@ -222,23 +193,12 @@ function updateContent(sections) {
   Object.keys(sections).forEach((sectionId) => {
     const element = document.getElementById(sectionId);
     if (element && sections[sectionId]) {
-      // 清除现有内容
-      element.innerHTML = "";
-
-      // 添加加载动画
-      const loadingDiv = document.createElement("div");
-      loadingDiv.className = "loading";
-      element.appendChild(loadingDiv);
-
       // 使用marked.js解析markdown内容
       const content = marked.parse(sections[sectionId]);
+      element.innerHTML = content;
 
-      // 创建临时容器来处理内容
-      const tempContainer = document.createElement("div");
-      tempContainer.innerHTML = content;
-
-      // 处理图片
-      tempContainer.querySelectorAll("img").forEach((img) => {
+      // 处理图片加载
+      element.querySelectorAll("img").forEach((img) => {
         // 创建图片容器
         const container = document.createElement("div");
         container.className = "img-container";
@@ -246,7 +206,7 @@ function updateContent(sections) {
         // 处理图片URL
         const originalSrc = img.getAttribute("src");
         if (originalSrc) {
-          // 移除可能的 Markdown 语法并清理URL
+          // 移除可能的 Markdown 语法
           const cleanSrc = originalSrc.replace(/[!\[\]]/g, "").trim();
 
           // 创建新的图片元素
@@ -258,36 +218,60 @@ function updateContent(sections) {
           loadingDiv.className = "loading";
           container.appendChild(loadingDiv);
 
-          // 图片加载失败处理
-          newImg.onerror = () => {
-            loadingDiv.remove();
-            const errorDiv = document.createElement("div");
-            errorDiv.className = "error";
-            errorDiv.innerHTML = `
-              <div>图片加载失败</div>
-              <div class="error-url">${cleanSrc}</div>
-              <button class="retry-button" onclick="retryImage(this, '${cleanSrc}')">重试</button>
-            `;
-            container.appendChild(errorDiv);
+          // 尝试不同的图片加载方式
+          const tryLoadImage = (urls, index = 0) => {
+            if (index >= urls.length) {
+              // 所有尝试都失败了
+              loadingDiv.remove();
+              const errorDiv = document.createElement("div");
+              errorDiv.className = "error";
+              errorDiv.innerHTML = `
+                <div>图片加载失败</div>
+                <button class="retry-button" onclick="retryImage(this, '${cleanSrc}')">重试</button>
+                <div class="error-url">${cleanSrc}</div>
+              `;
+              container.appendChild(errorDiv);
+              console.error("图片加载失败:", cleanSrc);
+              return;
+            }
+
+            newImg.onerror = () => {
+              console.log(`尝试加载失败，使用下一个URL: ${urls[index]}`);
+              tryLoadImage(urls, index + 1);
+            };
+
+            newImg.onload = function () {
+              loadingDiv.remove();
+              this.classList.add("loaded");
+              container.appendChild(this);
+            };
+
+            newImg.src = urls[index];
           };
 
-          // 图片加载成功处理
-          newImg.onload = function () {
-            loadingDiv.remove();
-            this.classList.add("loaded");
-            container.appendChild(this);
-          };
+          // 准备不同的URL尝试方案
+          const urls = [
+            cleanSrc, // 原始URL
+            cleanSrc.replace("http://", "https://"), // HTTPS版本
+            `https://images.weserv.nl/?url=${encodeURIComponent(cleanSrc)}`, // 使用weserv.nl代理
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(
+              cleanSrc
+            )}`, // 使用allorigins代理
+          ];
 
-          // 设置图片源
-          newImg.src = cleanSrc;
+          // 开始尝试加载
+          tryLoadImage(urls);
         }
 
         // 替换原始图片
         img.parentNode.replaceChild(container, img);
       });
 
-      // 更新实际内容
-      element.innerHTML = tempContainer.innerHTML;
+      // 移除加载状态
+      const loadingElement = element.querySelector(".loading");
+      if (loadingElement) {
+        loadingElement.style.display = "none";
+      }
     }
   });
 }
@@ -308,17 +292,35 @@ window.retryImage = function (button, originalSrc) {
     const newImg = new Image();
     newImg.className = "content-image";
 
-    newImg.onerror = () => {
-      loadingDiv.remove();
-      const errorDiv = document.createElement("div");
-      errorDiv.className = "error";
-      errorDiv.innerHTML = `
-        <div>图片加载失败</div>
-        <div class="error-url">${originalSrc}</div>
-        <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
-      `;
-      container.appendChild(errorDiv);
-    };
+    // 准备不同的URL尝试方案
+    const urls = [
+      originalSrc,
+      originalSrc.replace("http://", "https://"),
+      `https://images.weserv.nl/?url=${encodeURIComponent(originalSrc)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(originalSrc)}`,
+    ];
+
+    let currentIndex = 0;
+
+    function tryNextUrl() {
+      if (currentIndex < urls.length) {
+        console.log(`尝试加载URL: ${urls[currentIndex]}`);
+        newImg.src = urls[currentIndex];
+        currentIndex++;
+      } else {
+        loadingDiv.remove();
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error";
+        errorDiv.innerHTML = `
+          <div>图片加载失败</div>
+          <button class="retry-button" onclick="retryImage(this, '${originalSrc}')">重试</button>
+          <div class="error-url">${originalSrc}</div>
+        `;
+        container.appendChild(errorDiv);
+      }
+    }
+
+    newImg.onerror = tryNextUrl;
 
     newImg.onload = function () {
       loadingDiv.remove();
@@ -326,7 +328,7 @@ window.retryImage = function (button, originalSrc) {
       container.appendChild(this);
     };
 
-    // 直接尝试加载原始URL
-    newImg.src = originalSrc;
+    // 开始尝试第一个URL
+    tryNextUrl();
   }
 };
