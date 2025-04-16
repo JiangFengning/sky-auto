@@ -92,13 +92,42 @@ document.addEventListener("DOMContentLoaded", function () {
   const content = document.querySelector(".content");
 
   if (window.innerWidth <= 768) {
+    // 创建遮罩层
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    document.body.appendChild(overlay);
+
+    // 创建菜单按钮
     const toggleButton = document.createElement("button");
-    toggleButton.textContent = "菜单";
-    toggleButton.classList.add("toggle-nav");
+    toggleButton.className = "toggle-nav";
+    const iconSpan = document.createElement("span");
+    iconSpan.className = "icon";
+    toggleButton.appendChild(iconSpan);
     document.body.insertBefore(toggleButton, sidebar);
 
+    // 处理菜单点击事件
     toggleButton.addEventListener("click", () => {
       sidebar.classList.toggle("show");
+      overlay.classList.toggle("show");
+      document.body.style.overflow = sidebar.classList.contains("show")
+        ? "hidden"
+        : "";
+    });
+
+    // 点击遮罩层关闭菜单
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("show");
+      overlay.classList.remove("show");
+      document.body.style.overflow = "";
+    });
+
+    // 点击导航链接后关闭菜单
+    document.querySelectorAll(".sidebar a").forEach((link) => {
+      link.addEventListener("click", () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+        document.body.style.overflow = "";
+      });
     });
   }
 
@@ -193,12 +222,23 @@ function updateContent(sections) {
   Object.keys(sections).forEach((sectionId) => {
     const element = document.getElementById(sectionId);
     if (element && sections[sectionId]) {
+      // 清除现有内容
+      element.innerHTML = "";
+
+      // 添加加载动画
+      const loadingDiv = document.createElement("div");
+      loadingDiv.className = "loading";
+      element.appendChild(loadingDiv);
+
       // 使用marked.js解析markdown内容
       const content = marked.parse(sections[sectionId]);
-      element.innerHTML = content;
 
-      // 处理图片加载
-      element.querySelectorAll("img").forEach((img) => {
+      // 创建临时容器来处理内容
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = content;
+
+      // 处理图片
+      tempContainer.querySelectorAll("img").forEach((img) => {
         // 创建图片容器
         const container = document.createElement("div");
         container.className = "img-container";
@@ -267,11 +307,8 @@ function updateContent(sections) {
         img.parentNode.replaceChild(container, img);
       });
 
-      // 移除加载状态
-      const loadingElement = element.querySelector(".loading");
-      if (loadingElement) {
-        loadingElement.style.display = "none";
-      }
+      // 更新实际内容
+      element.innerHTML = tempContainer.innerHTML;
     }
   });
 }
