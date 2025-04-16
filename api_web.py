@@ -59,7 +59,7 @@ class SkyTask(object):
                 r'<h1 class="feed-article__headline">(.*?)</h1>')
             html = pat.findall(resp)[0]
             title = pat_title.findall(resp)[0]
-            title = "光遇每日任务标题" #去除DIV
+            #title = "光遇每日任务标题" #去除DIV
         except Exception as e:
             log.logger.warning(f"{article_url}解析失败! {e}")
             return False, False
