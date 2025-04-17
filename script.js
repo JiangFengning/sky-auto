@@ -2,8 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // 初始化变量
   const updateTimeElement = document.getElementById("update-time");
   const refreshButton = document.getElementById("refresh-btn");
-  const sidebar = document.querySelector(".sidebar ul");
+  const sidebarNav = document.querySelector(".sidebar ul");
   const mainContent = document.querySelector("main.content");
+  const sidebar = document.querySelector(".sidebar");
+  const content = document.querySelector(".content");
   let lastUpdateTime = null;
 
   // 定义所有可能的部分
@@ -25,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const sections = parseMdContent(text);
 
         // 清空现有的导航和内容
-        sidebar.innerHTML = "";
+        sidebarNav.innerHTML = "";
         mainContent.innerHTML = `
           <div class="header-info">
             <h1>光遇每日任务</h1>
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // 添加导航项
             const navItem = document.createElement("li");
             navItem.innerHTML = `<a href="#${sectionId}">${allSections[sectionId]}</a>`;
-            sidebar.appendChild(navItem);
+            sidebarNav.appendChild(navItem);
 
             // 添加内容区域
             const section = document.createElement("div");
@@ -133,9 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // 在移动设备上处理导航栏的显示/隐藏
-  const sidebar = document.querySelector(".sidebar");
-  const content = document.querySelector(".content");
-
   if (window.innerWidth <= 768) {
     // 创建遮罩层
     const overlay = document.createElement("div");
