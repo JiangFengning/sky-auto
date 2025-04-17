@@ -2,24 +2,80 @@ document.addEventListener("DOMContentLoaded", function () {
   // 初始化变量
   const updateTimeElement = document.getElementById("update-time");
   const refreshButton = document.getElementById("refresh-btn");
+  const sidebar = document.querySelector(".sidebar ul");
+  const mainContent = document.querySelector("main.content");
   let lastUpdateTime = null;
+
+  // 定义所有可能的部分
+  const allSections = {
+    "daily-tasks": "今日任务",
+    "eden-eye": "伊甸之眼坠落碎片",
+    ancestors: "旅行先祖",
+    "flower-tokens": "花朵代币",
+    magic: "魔法商店",
+    candles: "大蜡烛",
+    "listen-together": "一起听",
+  };
 
   // 加载内容函数
   function loadContent() {
-    // 显示加载状态
-    document.querySelectorAll(".section").forEach((section) => {
-      section.querySelector(".loading").style.display = "block";
-    });
-
     fetch("README.md")
       .then((response) => response.text())
       .then((text) => {
         const sections = parseMdContent(text);
+
+        // 清空现有的导航和内容
+        sidebar.innerHTML = "";
+        mainContent.innerHTML = `
+          <div class="header-info">
+            <h1>光遇每日任务</h1>
+            <div class="update-info">
+              <span id="update-time">更新时间：加载中...</span>
+              <button id="refresh-btn" class="refresh-button">
+                <span class="refresh-icon">↻</span> 刷新
+              </button>
+            </div>
+          </div>
+        `;
+
+        // 只添加有内容的部分
+        Object.entries(sections).forEach(([sectionId, content]) => {
+          if (content.trim()) {
+            // 添加导航项
+            const navItem = document.createElement("li");
+            navItem.innerHTML = `<a href="#${sectionId}">${allSections[sectionId]}</a>`;
+            sidebar.appendChild(navItem);
+
+            // 添加内容区域
+            const section = document.createElement("div");
+            section.id = sectionId;
+            section.className = "section";
+            section.innerHTML = `
+              <h2>${allSections[sectionId]}</h2>
+              <div class="loading"></div>
+            `;
+            mainContent.appendChild(section);
+          }
+        });
+
+        // 重新获取刷新按钮和更新时间元素
+        const refreshBtn = document.getElementById("refresh-btn");
+        const updateTime = document.getElementById("update-time");
+
+        // 更新内容
         updateContent(sections);
         lastUpdateTime = new Date();
-        updateTimeElement.textContent = `更新时间：${formatDate(
-          lastUpdateTime
-        )}`;
+        updateTime.textContent = `更新时间：${formatDate(lastUpdateTime)}`;
+
+        // 重新绑定刷新按钮事件
+        refreshBtn.addEventListener("click", function () {
+          this.querySelector(".refresh-icon").style.transform =
+            "rotate(360deg)";
+          setTimeout(() => {
+            this.querySelector(".refresh-icon").style.transform = "";
+          }, 300);
+          loadContent();
+        });
 
         // 显示成功消息
         showMessage("内容已更新", "success");
@@ -59,17 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     return date.toLocaleString("zh-CN", options);
   }
-
-  // 刷新按钮点击事件
-  refreshButton.addEventListener("click", function () {
-    // 添加旋转动画
-    this.querySelector(".refresh-icon").style.transform = "rotate(360deg)";
-    setTimeout(() => {
-      this.querySelector(".refresh-icon").style.transform = "";
-    }, 300);
-
-    loadContent();
-  });
 
   // 处理导航点击事件
   document.querySelectorAll(".sidebar a").forEach((link) => {
