@@ -252,7 +252,7 @@ function parseMdContent(text) {
     } else if (line.includes("花朵代币")) {
       currentSection = "flower-tokens";
       console.log("切换到花朵代币部分");
-    } else if (line.includes("魔法")) {
+    } else if (line.match(/^[\s]*魔法商店|^[\s]*##[\s]*魔法商店/)) {
       currentSection = "magic";
       console.log("切换到魔法商店部分");
     } else if (line.includes("大蜡烛")) {
