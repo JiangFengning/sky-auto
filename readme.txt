@@ -17,15 +17,15 @@
 
  **任务二：在禁阁重温先祖的美好回忆 0/1**
 
-完成方法：
+ **完成方法：**
 
-点燃先祖重温回忆
+ **点燃先祖重温回忆**
 
- **位置：禁阁四层**
+ **位置：禁阁三层**
 
- **先祖：拳礼武僧 [动作]**
+ **先祖：礼貌学士 [站姿]**
 
-![](https://img.166.net/reunionpub/1_kol_20250418_8d01935b23a81e178dcaff8c35eec966.jpeg)
+![](https://img.166.net/reunionpub/1_kol_20250418_b36b84efc68b1bd8dee584dadc3d7e9a.jpeg)
 
  **任务三：拯救一只被黑暗藤蔓困住的遥鲲 0/1**
 
@@ -105,9 +105,11 @@
 
 位置：暮土 藏宝岛礁
 
-![](https://img.166.net/reunionpub/1_kol_20250418_9e5615df550278a8e6b48f45877183a7.jpeg)
+![](https://img.166.net/reunionpub/1_kol_20250418_0492f2278ace8467ef5b2de766fd93ea.jpeg)
 
 兑换图
+
+![](https://img.166.net/reunionpub/1_kol_20250418_92e53ba599e92b5d5d6603ea8e742afa.jpeg)
 
 小王子季-集体复刻
 
