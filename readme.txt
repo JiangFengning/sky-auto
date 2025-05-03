@@ -92,7 +92,7 @@
 
 ![](https://img.166.net/reunionpub/ds/kol_server/20240717/003917-8p704dsqv9.png)
 
-                                                     **  珍珠代币**
+                                                                                                         **  珍珠代币**
 
  **活动时间：5月1日～5月21日**
 
@@ -132,7 +132,7 @@
 
  **互动获取   每天5枚**
 
-![](https://img.166.net/reunionpub/1_kol_20250503_f9f927736147f25192ba8a27eb59606b.jpeg)
+![](https://img.166.net/reunionpub/1_kol_20250504_21c44624020a04725314c9100eaafa24.jpeg)
 
  **兑换获取**
 
