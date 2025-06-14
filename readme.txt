@@ -1,85 +1,71 @@
 # 光遇每日任务标题
-![](https://img.166.net/reunionpub/1_kol_20250614_899985b5221bc5c53e026fa51f57fffb.png)
+![](https://img.166.net/reunionpub/1_kol_20250615_e048626377ba50abe018c9aab717929d.png)
 
-**任务一：和陌生人一起坐在长凳上 0/1**
-
-完成方法：
-
-和陌生玩家一起坐在石凳上即可完成
-
- **注：除晨岛和遇境外 其他地图大厅前均有石凳**
-
-![](https://img.166.net/reunionpub/1_kol_20250614_7263ffcb0376e4f8e8e7598f638e7173.jpeg)
-
- **任务二：在雨林重温先祖的美好回忆 0/1**
+**任务一：点亮一位玩家 0/1**
 
 完成方法：
 
-点燃先祖重温回忆
+靠近天空王国中的任意其他玩家举起心火蜡烛等待对方点亮即可完成
 
- **位置：雨林 密林遗迹**
+![](https://img.166.net/reunionpub/1_kol_20250615_d05f3f5e07b7d4820c0094e245c472cd.png)
 
- **先祖：白日梦森林人**
+ **任务二：掀翻5只螃蟹 0/5**
 
-![](https://img.166.net/reunionpub/1_kol_20250614_82c8b15519231321c36b6c3ea1ecb715.png)
+完成方法：
 
- **任务三：拯救一只被黑暗藤蔓困住的遥鲲 0/1**
+点击人物头部长按大叫即可掀翻螃蟹
 
-  * 完成方法1：
+ **推荐位置：**
 
-拿出心火蜡烛燃烧黑暗藤蔓拯救遥鲲即可完成
+ **云野 圣岛**
 
- **位置：**
+ **暮土 边陲荒漠/巨兽荒原**
 
- **雨林 密林遗迹**
+![](https://img.166.net/reunionpub/1_kol_20250615_2f0e49d11073fa85650d1ab8092c89c3.jpeg)
 
- **1.密林遗迹中间亭子下方**
+ **任务三：老练音乐家在圆梦村需要帮助0/1**
 
- **2.密林遗迹右侧矿洞前**
+完成方法：
 
- **注：共有两处随机拯救一只即可完成**
+前往圆梦村找到老练音乐家领取任务，找到屋顶上方的吉他并递交给它即可完成
 
-![](https://img.166.net/reunionpub/1_kol_20250614_c87eef50fb9eacfb635a8803184ea7d2.png)
+ **位置：霞谷 圆梦村**
 
-![](https://img.166.net/reunionpub/1_kol_20250614_51cf9016f02533c2497b05da524281ab.png)
+![](https://img.166.net/reunionpub/1_kol_20250615_df7cfa36ce4a71d84bad572912c5fe48.jpeg)
 
-  * 完成方法2：
+![](https://img.166.net/reunionpub/1_kol_20250615_bfa564b4474f2889612c35f764b41568.png)
 
-前往风行网道 重温剧情任务五 燃烧黑暗植物 拯救遥鲲即可
-
- **位置：雨林 风行网道**
-
-![](https://img.166.net/reunionpub/1_kol_20250614_35832b9f384771fe8b7efc584cc99e3b.png)
-
-  * 完成方法3：
-
-靠近沙滩上的遥鲲幼仔即可完成
-
- **位置：云野 云峰**
-
-![](https://img.166.net/reunionpub/1_kol_20250614_d99baa7668b53ad6fffdbe42c0e18cf2.jpeg)
-
- **任务四：在雨林追逐散落的星光 0/1**
+ **任务四：在霞谷追逐散落的星光 0/1**
 
 完成方法：
 
 靠近星光即可完成
 
- **位置：雨林 静谧庭院**
+ **位置：霞谷 滑冰场**
 
-![](https://img.166.net/reunionpub/1_kol_20250614_98a42053761d8f29e5c1b8141a11a7a7.jpeg)
+![](https://img.166.net/reunionpub/1_kol_20250615_59dca68401735347f63ed388a6aaf00a.jpeg)
+
+![](https://img.166.net/reunionpub/ds/kol_server/20240717/003917-8p704dsqv9.png)
+
+ **季节蜡烛**
+
+地图：霞谷
+
+位置：B组
+
+![](https://img.166.net/reunionpub/1_kol_20250615_c44b79dda4920a10a5d67b85dd2c4bf2.png)
 
 ![](https://img.166.net/reunionpub/ds/kol_server/20240717/003917-8p704dsqv9.png)
 
  **伊甸之眼坠落碎片位置**
 
- **地图：雨林**
+ **地图：霞谷**
 
  **灼热碎片 [红石]**
 
- **具体位置：** 雨林神殿
+ **具体位置：雪隐峰**
 
- **坠落时间：** 10、14、22小时的08分40秒左右～50分
+ **坠落时间：** 7、13、19小时的08分40秒左右～50分
 
  **清理方式：** 净化红石碎片周围黑暗植物，并完成净化任务
 
@@ -87,7 +73,7 @@
 
  **注：此坠落点可完成 [破晓季] 季节任务**
 
-![](https://img.166.net/reunionpub/1_kol_20250614_e2fe235abc042dd5346a18a6731da9c0.png)
+![](https://img.166.net/reunionpub/1_kol_20250615_4b75d343a5fc5926070e62cecf07b0ae.png)
 
 ![](https://img.166.net/reunionpub/ds/kol_server/20240717/003917-8p704dsqv9.png)
 
@@ -255,7 +241,7 @@
 
  **今日免费魔法**
 
- **返老还童×1 长大成人×1**
+ **体形重塑×1 绚丽彩虹×1**
 
  **魔法工坊**
 
@@ -269,7 +255,7 @@
 
  **![](https://img.166.net/reunionpub/ds/kol/20231014/004605-qmuiowanf4.png)**
 
-![](https://img.166.net/reunionpub/1_kol_20250614_1083c5c46275a52bf047e9ee251ab6b0.png)
+![](https://img.166.net/reunionpub/1_kol_20250615_0cf0b9bf5f648dfa3d531ca5f7511487.png)
 
  **魔法商店**
 
@@ -277,7 +263,7 @@
 
 注：开启 魔法商店 需完成 [归巢季] 季节任务八
 
-![](https://img.166.net/reunionpub/1_kol_20250614_75e70544e48284f992259404a7883340.png)
+![](https://img.166.net/reunionpub/1_kol_20250615_2b70b5e61f8e5482aa9c7236b3cfd6b2.png)
 
  **留影魔法：**
 
